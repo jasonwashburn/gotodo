@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"strings"
 	"testing"
 )
 
@@ -50,7 +49,7 @@ func TestTodoCLI(t *testing.T) {
 	cmdPath := filepath.Join(dir, binName)
 
 	t.Run("AddNewTask", func(t *testing.T) {
-		cmd := exec.Command(cmdPath, strings.Split(task, " ")...)
+		cmd := exec.Command(cmdPath, "-task", task)
 
 		if err := cmd.Run(); err != nil {
 			t.Fatal(err)
@@ -58,7 +57,7 @@ func TestTodoCLI(t *testing.T) {
 	})
 
 	t.Run("ListTasks", func(t *testing.T) {
-		cmd := exec.Command(cmdPath)
+		cmd := exec.Command(cmdPath, "-list")
 
 		out, err := cmd.CombinedOutput()
 		if err != nil {
@@ -66,6 +65,31 @@ func TestTodoCLI(t *testing.T) {
 		}
 
 		expected := task + "\n"
+
+		if expected != string(out) {
+			t.Errorf("Expected %q, got %q instead.", expected, string(out))
+		}
+	})
+
+	t.Run("CompleteTask", func(t *testing.T) {
+		task2 := "test task Number 2"
+		taskCmd := exec.Command(cmdPath, "-task", task2)
+		if err := taskCmd.Run(); err != nil {
+			t.Fatal(err)
+		}
+		completeCmd := exec.Command(cmdPath, "-complete", "1")
+		if err := completeCmd.Run(); err != nil {
+			t.Fatal(err)
+		}
+
+		listCommand := exec.Command(cmdPath, "-list")
+
+		out, err := listCommand.CombinedOutput()
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		expected := task2 + "\n"
 
 		if expected != string(out) {
 			t.Errorf("Expected %q, got %q instead.", expected, string(out))
