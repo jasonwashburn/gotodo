@@ -11,7 +11,7 @@ import (
 
 var (
 	binName  = "gotodo"
-	fileName = ".todo.json"
+	fileName = "test-todo.json"
 )
 
 func TestMain(m *testing.M) {
@@ -20,6 +20,8 @@ func TestMain(m *testing.M) {
 	if runtime.GOOS == "windows" {
 		binName += ".exe"
 	}
+
+	os.Setenv("TODO_FILENAME", fileName)
 
 	build := exec.Command("go", "build", "-o", binName)
 

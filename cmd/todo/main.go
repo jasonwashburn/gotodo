@@ -9,7 +9,10 @@ import (
 )
 
 func main() {
-	const todoFileName = ".todo.json"
+	var todoFileName = ".todo.json"
+	if os.Getenv("TODO_FILENAME") != "" {
+		todoFileName = os.Getenv("TODO_FILENAME")
+	}
 	l := &gotodo.List{}
 
 	task := flag.String("task", "", "Task to be included in the TODO list")
