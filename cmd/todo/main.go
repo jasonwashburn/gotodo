@@ -24,11 +24,7 @@ func main() {
 
 	switch {
 	case *list:
-		for _, item := range *l {
-			if !item.Done {
-				fmt.Fprintln(os.Stdout, item.Task)
-			}
-		}
+		fmt.Print(l)
 	case *task != "":
 		l.Add(*task)
 
